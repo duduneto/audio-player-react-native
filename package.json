@@ -1,9 +1,15 @@
 {
   "dependencies": {
+    "@react-native-community/slider": "^3.0.3",
+    "@react-navigation/native": "^5.9.4",
     "expo": "~40.0.0",
+    "expo-av": "~8.7.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
+    "react-native-audio-streaming": "^2.3.2",
+    "react-native-track-player": "^1.2.7",
+    "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12"
   },
   "devDependencies": {
