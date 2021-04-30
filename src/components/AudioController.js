@@ -10,6 +10,7 @@ const width = Dimensions.get('screen').width;
 const AudioController = () => {
 
     const [isPlaying, setIsPlaying] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
     const [startByte, setStartByte] = React.useState(0);
     const [sizeTrack, setSizeTrack] = React.useState(0);
     const [trackItem, setTrackItem] = React.useState();
@@ -34,6 +35,7 @@ const AudioController = () => {
     const handlePlay = async () => {
         console.log('Play')
         await trackItem.playAsync();
+        setLoading(false);
         setIsPlaying(true);
     }
     const handlePause = async () => {
@@ -44,17 +46,28 @@ const AudioController = () => {
 
     const loadSound = async (_startByte, reset) => {
         try {
+            setLoading(true);
             await trackItem.stopAsync();
             trackItem.setPositionAsync(parseInt(_startByte))
             if (!!isPlaying) {
                 await trackItem.playAsync();
             }
+            setLoading(false)
         } catch (error) {
             console.log('Error => ', error)
         }
     }
     const startLoadSound = async (_startByte) => {
         try {
+            Audio.setAudioModeAsync({
+                allowsRecordingIOS: false,
+                staysActiveInBackground: true,
+                interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+                playsInSilentModeIOS: true,
+                shouldDuckAndroid: true,
+                interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+                playThroughEarpieceAndroid: true
+             });
             const { sound } = await Audio.Sound.createAsync(
                 { uri: 'http://192.168.2.13:3000/storage_audio' },
                 initialTrackState
@@ -95,7 +108,7 @@ const AudioController = () => {
                 <Text>{millisToMinutesAndSeconds(sizeTrack)}</Text>
             </View>
             {
-                trackItem === undefined ?
+                trackItem === undefined || !!loading ?
                     <ActivityIndicator size="large" color="#000" />
                     :
                     <View style={styles.playerContainer}>
